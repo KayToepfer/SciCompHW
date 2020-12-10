@@ -101,20 +101,37 @@ md"""
 What can be done to improve the accuracy of the calculation ?
 """
 
+# ╔═╡ a706b49e-3b02-11eb-2bac-8757553291be
+begin
+	function more_accurate_sum(T::Type,K) 
+		s = zero(BigFloat) 
+		for k = 1:K
+			k = BigInt(k)
+		  	s += 1/k^2
+		end
+		convert(T,s)
+		s
+	end
+end
+
+# ╔═╡ adfbb620-3b02-11eb-3ccf-9b85c465eaa0
+basel_results(more_accurate_sum)
+
 # ╔═╡ 7f74d6f8-32f9-11eb-3c45-db4d4079e2fe
 # Try to find a better way for summation here
-function better_sum(T::Type,K)
+function faster_sum(T::Type,K)
 	s=collect(T,1:K).^-1
-	dot(s,s)
+	s=dot(s,s)
 end
 
 # ╔═╡ b742f79a-32f9-11eb-17a1-ddd2d0b29a19
-basel_results(better_sum)
+basel_results(faster_sum)
 
 # ╔═╡ 16191448-32fa-11eb-1b43-b9bc0ee5ac91
 # Write a report why your method is better
 md"""
-Our method is better because it's way faster (~10s versus ~100ms) and the error for Float32 and K=>10000 is slighly lesser. The use of vectorized calculation methods is much more preferable against loop involving methods.
+We found two solutions to increase accuracy. One is to simply increase K and the other would be to change the used data type T, so that rounding errors are decreased. We achieve this by using BigFloat. If we use BigFloat our run time increases.
+The other solution (faster_sum) is  way faster (~10s versus ~500ms) and the error for Float32 and K=>10000 is slighly lesser. The use of vectorized calculation methods is much more preferable against loop involving methods.
 """
 
 # ╔═╡ d8fe352e-357f-11eb-2335-2718b0fb72c7
@@ -231,7 +248,6 @@ function rhs(N,α)
 	f=fill(h, N)
 	f[1]=h/2
 	f[N]=h/2+1
-	#Transpose(f)
 	f
 end
 
@@ -339,7 +355,7 @@ end
 
 # ╔═╡ 95f600cc-3589-11eb-02c3-d5339e136f72
 md"""
-Discussion: ...
+Discussion: Comparing the diffrent solution strategies, they all give an equivalent result (up to the scale of errors we were looking at). The approximation is getting smoother for higher k.
 """
 
 # ╔═╡ 03c46ad4-3577-11eb-0c1c-87c0f1f83914
@@ -350,7 +366,7 @@ md"""
 """
 
 # ╔═╡ 8d2cf9a0-3831-11eb-1398-913292dcc6f4
-function exact_solution(x)
+function exact_solution(x) #alpha = 1
 	u=-(1/2)*x^2+(5/6)*x+(5/6)
 	u
 end
@@ -416,7 +432,8 @@ plot_errors(collect(1:12))
 
 # ╔═╡ 9e93929e-3589-11eb-2238-233d3b611708
 md"""
-Discussion: ...
+Discussion: For smaller grid size (h), the erros are getting higher for $\alpha = 1$. 
+The finite difference method should increase accuracy by adding grid points. But, we noticed that with the increase of grid points, there is also an increase of rounding errors for the very small decimal values.
 """
 
 # ╔═╡ c57b37ee-3576-11eb-2483-856e4faa572e
@@ -441,7 +458,7 @@ begin
 		PyPlot.plot(x,solve_julia_sparse(A,b),label="sparse") # call the plot function
 		PyPlot.plot(x,solve_inv_multiply(A,b),label="multiply") # call the plot function
 		PyPlot.legend()
-		PyPlot.title("k = $k")
+		PyPlot.title("alpha = $alpha , k = $k")
 		figure=PyPlot.gcf() # return figure to Pluto
 	end
 end
@@ -472,7 +489,7 @@ plot_results(10,10^20)
 
 # ╔═╡ b6d3b92c-3589-11eb-15d6-57a482157251
 md"""
-Discussion: ...
+Discussion: The solution approaches $-\frac{1}{2}x^2+\frac{1}{2}x$ for large $\alpha$, like we already concluded in 2b).
 """
 
 # ╔═╡ Cell order:
@@ -488,6 +505,8 @@ Discussion: ...
 # ╠═8cdd12a8-32f2-11eb-07fb-afa1afa0212d
 # ╟─749d952e-3580-11eb-13c4-c3fa59f3f6e8
 # ╠═cec2ddf0-37f3-11eb-19d2-3791d3ebaf16
+# ╠═a706b49e-3b02-11eb-2bac-8757553291be
+# ╠═adfbb620-3b02-11eb-3ccf-9b85c465eaa0
 # ╠═7f74d6f8-32f9-11eb-3c45-db4d4079e2fe
 # ╠═b742f79a-32f9-11eb-17a1-ddd2d0b29a19
 # ╠═16191448-32fa-11eb-1b43-b9bc0ee5ac91
