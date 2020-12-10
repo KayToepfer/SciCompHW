@@ -229,8 +229,9 @@ end
 function rhs(N,α)
 	h=1/(N-1)
 	f=fill(h, N)
-	f[1]=0
-	f[N]=1
+	f[1]=h/2
+	f[N]=h/2+1
+	#Transpose(f)
 	f
 end
 
@@ -439,7 +440,6 @@ begin
 		PyPlot.plot(x,solve_julia_triag(A,b),label="triag") # call the plot function
 		PyPlot.plot(x,solve_julia_sparse(A,b),label="sparse") # call the plot function
 		PyPlot.plot(x,solve_inv_multiply(A,b),label="multiply") # call the plot function
-		PyPlot.plot(x,map(exact_solution, x),label="exact")
 		PyPlot.legend()
 		PyPlot.title("k = $k")
 		figure=PyPlot.gcf() # return figure to Pluto
@@ -497,7 +497,7 @@ Discussion: ...
 # ╟─605cd878-3575-11eb-19a1-83daaa8ce42b
 # ╠═75fb8be0-3575-11eb-15c3-6f2265dc2197
 # ╟─8e9a0f30-3575-11eb-237d-279b788492a6
-# ╟─09142fa2-3802-11eb-3967-ef51bfdf5a95
+# ╠═09142fa2-3802-11eb-3967-ef51bfdf5a95
 # ╠═3ff27110-3804-11eb-3830-6dd64275c7b6
 # ╠═a3fea48a-3575-11eb-22b8-0d995ac3d111
 # ╟─bfacdc24-3575-11eb-312e-37eeb3d3c192
